@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>French Formatter</title>
+	<meta name="description" content="Integrator help tool dynamically adds HTML entities;">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css">
+	<style>
+	.m-10 {
+		margin: 10px 0;
+	}
+	.m-t-10 {
+		margin-top: 10px;
+	}
+	.m-t-20 {
+		margin-top: 20px;
+	}
+	.found {
+		background: #ff0;
+	}
+	.found-dash {
+		background: #8fceff;
+	}
+	</style>
+</head>
+
+<body>
+
+	<div class="section container">
+		<div class="m-10">
+			<h1 class="title is-size-1 m-10">French Formatter</h1>
+			<p class="subtitle">Integrator helper tool</p>
+			<p class="is-size-4">Super simple app frees you from adding <span class="has-text-weight-bold found">&amp;nbsp;</span> or <span class="has-text-weight-bold found-dash">&amp;#8209;</span> by hand!</p>
+			<p>Target Patterns: <span class="found">30 %</span>, <span class="found">10 $</span>, <span class="found">23 h</span>, <span class="found">blah ?</span>, <span class="found">blah !</span>, <span class="found-dash">Allez-y</span> or <span class="found-dash">Êtes-vous</span> etc.</p>
+
+		</div>
+
+		<div class="m-t-20">
+			<textarea id="incoming" class="textarea" cols="150" rows="10" placeholder="Paste your text here"></textarea>
+			<button id="submit" class="button is-fullwidth is-primary m-10">FORMAT</button>
+
+			<div id="display" class="m-t-20" style="display: none;">
+				<p>Result: <span id="counter"></span> hit(s)</p>
+				<div id="showResult" class="m-10"></div>
+				<textarea id="outcome" class="textarea" cols="150" rows="10"></textarea>
+			</div>
+		</div>
+	</div>
+
+	<div class="footer has-text-centered">
+		<p class="has-text-centere">Copyright 2018 @daishodesign.com - All Rights Reserved</p>
+		<p class="is-size-7">Please contact me if you spot any error or have a request at <a href="mailto:daishokomiyama@gmail.com">daishokomiyama@gmail.com</a></p>
+	</div>
+
+	<script>
+	(function() {
+		const outcome = document.getElementById('outcome'),
+			  display = document.getElementById('display'),
+			  submit = document.getElementById('submit');
+
+		submit.addEventListener('click', function() {
+			//get pattern
+			//for &nbsp; \d+\s{1}([%|\$]|h$|h\W)|\w+\s{1}[\!\?]
+			//target string e.g. "30 %", "30 $", "blah !", "blah ?" or "23 h 59" but not "23 home"
+			//for &#8209; ([a-zàâäèéêëîïôœùûüÿç])-([a-zàâäèéêëîïôœùûüÿç])
+			//target string e.g. "c'est-à-dire", "celui-ci" or "quatre-vingts"
+			const re = /\d+\s{1}([%|\$]|h$|h\W)|\w+\s{1}[\!\?]|([a-zàâäèéêëîïôœùûüÿç])-([a-zàâäèéêëîïôœùûüÿç])/ig;
+
+			//get string
+			const processString = document.getElementById('incoming').value;
+
+			let matchArray,
+				highlighting = '<pre>',
+				first = 0,
+				last = 0,
+				target,
+				className,
+				counter = 0;
+
+			//find each match
+			while((matchArray = re.exec(processString)) !== null ) {
+				last = matchArray.index;
+
+				//get all of string up to match, concatenate
+				highlighting += processString.substring(first, last);
+
+				//insert &nbsp;
+				target = matchArray[0].replace(/\s{1}/, '&nbsp;').replace(/-/, '&#8209;');
+
+				//add matched, with class
+				className = target.indexOf('&nbsp;') > -1  ? 'found' : 'found-dash';
+				highlighting += '<span class="' + className + '">' + target + '</span>';
+				first = re.lastIndex;
+				counter++;
+			}
+
+			//finish off string
+			highlighting += processString.substring(first, processString.length);
+			highlighting += '</pre>';
+
+			//insert into page
+			document.getElementById('counter').innerHTML = counter;
+			document.getElementById('showResult').innerHTML = highlighting;
+			highlighting = highlighting.replace(/<\/?pre>/g, '').replace(/<\/?span.*?>/g, '').replace(/<\/?script.*?>/g, '');
+			outcome.value = highlighting;
+			display.style.display = 'block';
+		});
+
+		//select text on focus
+		outcome.addEventListener('focus', function() {
+			outcome.select();
+		});
+	}());
+	</script>
+
+</body>
+</html>
