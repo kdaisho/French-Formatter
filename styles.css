@@ -23,6 +23,7 @@
 .tool {
 	cursor: help;
 	position: relative;
+	text-decoration: underline;
 }
 .tool::before,
 .tool::after {
