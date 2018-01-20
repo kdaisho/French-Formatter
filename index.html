@@ -7,23 +7,7 @@
 	<title>French Formatter</title>
 	<meta name="description" content="Integrator help tool dynamically adds HTML entities;">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css">
-	<style>
-	.m-10 {
-		margin: 10px 0;
-	}
-	.m-t-10 {
-		margin-top: 10px;
-	}
-	.m-t-20 {
-		margin-top: 20px;
-	}
-	.found {
-		background: #ff0;
-	}
-	.found-dash {
-		background: #8fceff;
-	}
-	</style>
+	<link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
@@ -32,8 +16,8 @@
 		<div class="m-10">
 			<h1 class="title is-size-1 m-10">French Formatter</h1>
 			<p class="subtitle">Integrator helper tool</p>
-			<p class="is-size-4">Super simple app frees you from adding <span class="has-text-weight-bold found">&amp;nbsp;</span> or <span class="has-text-weight-bold found-dash">&amp;#8209;</span> by hand!</p>
-			<p>Target Patterns: <span class="found">30 %</span>, <span class="found">10 $</span>, <span class="found">23 h</span>, <span class="found">blah ?</span>, <span class="found">blah !</span>, <span class="found-dash">Allez-y</span> or <span class="found-dash">Êtes-vous</span> and more!</p>
+			<p class="is-size-4">Super simple app frees you from adding <span class="found tool has-text-centered" data-tip="non&#8209;breaking&nbsp;space" tabindex="0">&amp;nbsp;</span> and <span class="found-dash tool has-text-centered" data-tip="non&#8209;breaking&nbsp;hyphen" tabindex="1">&amp;#8209;</span> by hand!</p>
+			<p>Target Examples: <span class="has-text-weight-bold found">30 %</span>, <span class="has-text-weight-bold found">10 $</span>, <span class="has-text-weight-bold found">23 h</span>, <span class="has-text-weight-bold found">Blah ?</span>, <span class="has-text-weight-bold found">Blah !</span>, <span class="has-text-weight-bold found">Blah :</span>, <span class="has-text-weight-bold found-dash">Êtes-vous</span></p>
 
 		</div>
 
@@ -42,9 +26,10 @@
 			<button id="submit" class="button is-fullwidth is-primary m-10">FORMAT</button>
 
 			<div id="display" class="m-t-20" style="display: none;">
-				<p>Result: <span id="counter"></span> hit(s)</p>
-				<div id="showResult" class="m-10"></div>
-				<textarea id="outcome" class="textarea" cols="150" rows="10"></textarea>
+				<h2 class="is-size-4 m-t-20"><span id="counter">0</span> hit(s)</h2>
+				<div id="showResult" class="highlighted m-10"></div>
+				<h2 class="is-size-4 m-t-20">Result:</h2>
+				<textarea id="outcome" class="textarea m-10" cols="150" rows="10"></textarea>
 			</div>
 		</div>
 	</div>
@@ -62,17 +47,21 @@
 
 		submit.addEventListener('click', function() {
 			//get pattern
-			//for &nbsp; \d+\s{1}([%|\$]|h$|h\W)|\w+\s{1}[\!\?]
-			//target string e.g. "30 %", "30 $", "blah !", "blah ?" or "23 h 59" but not "23 home"
-			//for &#8209; ([a-zàâäèéêëîïôœùûüÿç])-([a-zàâäèéêëîïôœùûüÿç])
-			//target string e.g. "c'est-à-dire", "celui-ci" or "quatre-vingts"
-			const re = /\d+\s{1}([%|\$]|h$|h\W)|\w+\s{1}[\!\?]|([a-zàâäèéêëîïôœùûüÿç])-([a-zàâäèéêëîïôœùûüÿç])/ig;
+			//pattern1 e.g. '30 %', '30 $', '23 h' but not '23 home'
+			const pattern1 = '\\d\\s{1}(%(?!%|\\w)|\\$(?!\\w)|h$|h[\\s\\.,])';
+			//pattern2 e.g. 'blah !', 'blah ?', 'blah :'
+			const pattern2 = '\\w\\s{1}(\\!(?!\\w)|\\?(?!\\w)|:(?!\\w))';
+			//pattern3 e.g. 'Êtes-vous', 'Allez-y'
+			const pattern3 = '([a-zàâäèéêëîïôœùûüÿç])-([a-zàâäèéêëîïôœùûüÿç])';
+
+			//instantiate regex object
+			const re = RegExp(pattern1 + '|' + pattern2 + '|' + pattern3, 'ig');
 
 			//get string
 			const processString = document.getElementById('incoming').value;
 
 			let matchArray,
-				highlighting = '<pre>',
+				highlighting = '',
 				first = 0,
 				last = 0,
 				target,
@@ -98,7 +87,6 @@
 
 			//finish off string
 			highlighting += processString.substring(first, processString.length);
-			highlighting += '</pre>';
 
 			//insert into page
 			document.getElementById('counter').innerHTML = counter;
