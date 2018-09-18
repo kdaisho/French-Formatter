@@ -17,8 +17,7 @@
 			<h1 class="title is-size-1 m-10">French Formatter</h1>
 			<p class="subtitle">Integrator helper tool</p>
 			<p class="is-size-4">Super simple app frees you from adding <span class="tool has-text-info has-text-centered" data-tip="non&#8209;breaking&nbsp;space indicated with yellow" tabindex="0">&amp;nbsp;</span> and <span class="tool has-text-info has-text-centered" data-tip="non&#8209;breaking&nbsp;hyphen indicated with blue" tabindex="1">&amp;#8209;</span> by hand!</p>
-			<p>Target Examples: <span class="has-text-weight-bold found">30 %</span>, <span class="has-text-weight-bold found">10 $</span>, <span class="has-text-weight-bold found">23 h</span>, <span class="has-text-weight-bold found">Blah ?</span>, <span class="has-text-weight-bold found">Blah !</span>, <span class="has-text-weight-bold found">Blah :</span>, <span class="has-text-weight-bold found-dash">Êtes-vous</span></p>
-
+			<p>Target Examples: <span class="has-text-weight-bold found">30 %</span>, <span class="has-text-weight-bold found">10 $</span>, <span class="has-text-weight-bold found">23 h</span>, <span class="has-text-weight-bold found">Blah ?</span>, <span class="has-text-weight-bold found">Blah !</span>, <span class="has-text-weight-bold found">Blah :</span>, <span class="has-text-weight-bold found">« Blah »</span>, <span class="has-text-weight-bold found-dash">Êtes-vous</span></p>
 		</div>
 
 		<div class="m-t-20">
@@ -53,9 +52,11 @@
 			const pattern2 = '\\w\\s{1}(\\!(?!\\w)|\\?(?!\\w)|:(?!\\w))';
 			//pattern3 e.g. 'Êtes-vous', 'Allez-y'
 			const pattern3 = '([a-zàâäèéêëîïôœùûüÿç])-([a-zàâäèéêëîïôœùûüÿç])';
+			//pattern4 e.g. '« blah », « 100 »'
+			const pattern4 = '«\\s{1}(\\w|\\d)|(\\w|\\d)\\s{1}»';
 
 			//instantiate regex object
-			const re = RegExp(pattern1 + '|' + pattern2 + '|' + pattern3, 'ig');
+			const re = RegExp(pattern1 + '|' + pattern2 + '|' + pattern3 + '|' + pattern4, 'ig');
 
 			//get string
 			const processString = document.getElementById('incoming').value;
