@@ -34,7 +34,7 @@
 	</div>
 
 	<div class="footer has-text-centered">
-		<p class="has-text-centere">Copyright 2018 @daishodesign.com - All Rights Reserved</p>
+		<p class="has-text-centere">Copyright <span id="year"></span> @daishodesign.com - All Rights Reserved</p>
 		<p class="is-size-7">Please contact me if you spot any error or have a request at <a href="mailto:daishokomiyama@gmail.com">daishokomiyama@gmail.com</a></p>
 	</div>
 
@@ -101,6 +101,9 @@
 		outcome.addEventListener('focus', function() {
 			outcome.select();
 		});
+
+		const currentYear = new Date().getFullYear();
+		document.getElementById("year").innerHTML = currentYear;
 	}());
 	</script>
 
