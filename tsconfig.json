@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"strict": true,
+		"strictFunctionTypes": true,
+		"strictNullChecks": true,
+		"noImplicitAny": true,
+		"allowJs": true,
+		"checkJs": true,
+		"target": "es2017",
+		"outDir": "js",
+		"declaration": true,
+		"sourceMap": true,
+		"watch": true
+	},
+	"include": ["ts"]
+}
